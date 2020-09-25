@@ -66,19 +66,19 @@ def month_log():
     Attendance_file = pd.read_csv('attendance_log.csv', index_col=False,
                             skipinitialspace=True, skip_blank_lines=True)
     try:
-        new = input("Please enter the month (a number) for attendance log:\n")
+        new = int(input("Please enter the month (a number) for attendance log:\n"))
     # checking for errors:
     except ValueError:
         print("You must enter only the number of the month")
     # convert the time column to datetime:
     Attendance_file['date'] = pd.to_datetime(Attendance_file['date'], format="%d/%m/%Y")
-    print(Attendance_file['date'].type)
+    print(Attendance_file.date.dt.month)
 # Check that the month has information
-    if new not in Attendance_file['date'].dt.month:
+    if new not in Attendance_file.date.dt.month:
         print('The month has no log')
     
     # finds all the rows that contains the name given (new)
-    per_month = Attendance_file[Attendance_file['date'].dt.month == new]
+    per_month = Attendance_file[Attendance_file.date.dt.month == new]
     print(per_month)
     
     
