@@ -1,7 +1,7 @@
 import pandas as pd
 import datetime
 from pathlib import Path
- 
+
 
 
 project_folder = Path("D:\\Python\\")
@@ -15,6 +15,39 @@ print(check_emp)
 
 
 
+
+def mark_attendance():
+    # open the main employee file
+    employees_main = pd.read_csv(open_employee, index_col=False,
+                                 skipinitialspace=True, skip_blank_lines=True)
+
+    emp = employees_main.drop_duplicates()  # deletes any duplicates in file
+    print(emp)
+    # open attendance file
+    attendance_file = pd.read_csv('attendance_log.csv', index_col=False,
+                                  skipinitialspace=True, skip_blank_lines=True)
+    attendance_file = attendance_file.drop_duplicates()
+    try:
+        new = int(input("Please enter the ID of the employee for attendance log:\n"))
+    # checking for errors:
+    except ValueError:
+        print("You must enter only ID number")
+    if new not in emp['employee_id'].values:
+        print('No such employee in the employee main file')
+    if new not in attendance_file['employee_id'].values:
+        print('No such employee in the attendance log file')
+    # finds all the rows that contains the ID given (new)
+    else:
+        now_time = datetime.datetime.now()
+        entering_time = now_time.replace(microsecond=0)    # deleting the microseconds
+        print('Entering time is: ', entering_time)
+        # create a new dataframe
+        new_record = pd.DataFrame({'employee_id': new, 'name': attendance_file[attendance_file.employee_id == new].name,
+                                'date': entering_time.date(), 'time': entering_time.time() })
+        new_record = new_record.drop_duplicates()     # erase duplicates
+        # Merge the files to a new DF
+        emp_df = pd.merge(attendance_file, new_record, how='outer')
+        emp_df.to_csv('D:\\Python\\attendance_log.csv', index=False, date_format='%Y-%m-%d')
 
 def attendance():
     chosen = input ("What kind of report?\n \
@@ -32,7 +65,7 @@ def attendance():
     if chosen == '3':
         pass
     if chosen == '4':
-        pass
+        mark_attendance()
     if chosen == '5':
         pass   
     
@@ -51,13 +84,14 @@ def emp_attendance_log():
     # checking for errors:
     except ValueError:
         print("You must enter only ID number")
-    if new not in emp['employee_id']:
+    if new not in emp['employee_id'].values:              # it doesn't work!!! read how to
         print('No such employee in the employee main file')
-    if new not in Attendance_file['employee_id']:
+    if new not in Attendance_file['employee_id'].values:
         print('No such employee in the attendance log file')
     # finds all the rows that contains the ID given (new)
-    per_name = Attendance_file[Attendance_file.employee_id == new]
-    print(per_name)
+    else:
+        per_name = Attendance_file[Attendance_file.employee_id == new]
+        print(per_name)
 
 
 def month_log():    

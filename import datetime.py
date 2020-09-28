@@ -37,4 +37,6 @@ print(today)
 moon_landing = "7/20/1969"
 moon_landing_datetime = datetime.datetime.strptime(moon_landing, "%m/%d/%Y")
 print(moon_landing_datetime)   # 1969-07-20 00:00:00
+print(moon_landing_datetime.date())  # 1969-07-20
+print(moon_landing_datetime.time())  # 00:00:00
 
