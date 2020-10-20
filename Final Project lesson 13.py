@@ -47,16 +47,18 @@ mark_button = tk.Button(root, text="Mark Attendance",
                         command=Attendance_report_function.mark_attendance, bg="#F66EF0")
 exit_button = tk.Button(root, text='Exit', command=exit,
                         font="Arial 18", bg='#C233FF')
-entry_place = tk.Entry(root, width=50)
+
+#entry_place = tk.Entry(root, width=50)
 
 
 add_button1.place(relx=0.04, rely=0.5, relwidth=0.2, relheight=0.1)
 add_button2.place(relx=0.28, rely=0.5, relwidth=0.2, relheight=0.1)
 del_button3.place(relx=0.52, rely=0.5, relwidth=0.2, relheight=0.1)
 del_button4.place(relx=0.76, rely=0.5, relwidth=0.2, relheight=0.1)
-
-exit_button.place(relx=0.76, rely=0.8, relwidth=0.2, relheight=0.1)
-entry_place.place(relx=0.25, rely=0.7, relwidth=0.5, relheight=0.2)
+hrReports_button.place(relx=0.10, rely=0.7, relwidth=0.2, relheight=0.1)
+mark_button.place(relx=0.40, rely=0.7, relwidth=0.2, relheight=0.1)
+exit_button.place(relx=0.76, rely=0.7, relwidth=0.2, relheight=0.1)
+#entry_place.place(relx=0.25, rely=0.7, relwidth=0.5, relheight=0.2)
 
 
 def exit():
