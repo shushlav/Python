@@ -3,6 +3,7 @@ from pathlib import Path
 import functions_emp
 import Attendance_report_function
 import tkinter as tk
+from tkinter import filedialog
 from PIL import ImageTk, Image
 
 
@@ -23,14 +24,7 @@ img = ImageTk.PhotoImage(Image.open(path))
 background_label = tk.Label(root, image=img)
 background_label.place(relwidth=1, relheight=1)
 
-'''
-# Creating a frame widget
-frame =tk.Frame(root, bg='green', bd=5) # bd=border margins
-# PLACE-This geometry manager organizes widgets by placing them in a specific position in the parent widget.
-frame.place(relx=0.5, rely=0.1, relwidth=1, relheight=1, anchor='n')  
-# relx, rely − Horizontal and vertical offset as a float between 0.0 and 1.0, as a fraction of the height and width of the parent widget.
-# Height and width as a float between 0.0 and 1.0, as a fraction of the height and width of the parent widget.
-'''
+
 main_label = tk.Label(root, text="Hi! What would you like to do today?", anchor='n', bg="yellow", padx=10, pady=10)
 main_label.place(relx=0.25, rely=0.2, relwidth=0.5, relheight=0.1)
 add_button1 = tk.Button(root, text='Add employee manually',

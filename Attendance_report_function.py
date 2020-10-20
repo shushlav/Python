@@ -50,7 +50,8 @@ def mark_attendance():
         now_time = datetime.datetime.now()
         entering_time = now_time.replace(microsecond=0)    # deleting the microseconds
         # print in the format I want
-        print('Entering time is: ', entering_time.strftime("%d/%m/%Y %H:%M"))
+        mark_time= 'Entering time is: ' + entering_time.strftime("%d/%m/%Y %H:%M")
+        messagebox.showinfo('Mark attendance', mark_time)
         # create a new dataframe
         new_record = pd.DataFrame({'employee_id': new, 'name': emp[emp.employee_id == new].name,
                                 'date': entering_time.date().strftime("%d/%m/%Y"), 'time': entering_time.time() })
