@@ -2,7 +2,7 @@ import pandas as pd
 from pathlib import Path
 
 
-project_folder = Path("D:\\Documents\\יעל\\Python\\Final_project\\")
+project_folder = Path("D:\\Python\\")
 
 
 employee = project_folder / 'employees.csv'
@@ -15,13 +15,21 @@ print(emp)
 print(stu)
 print(stu2)
 
-#new = df1.merge(df2,on=['Team','Year'],how='left')
-adding_all = pd.merge(emp, stu, how='outer')    # how='outer' joins all values and all rows (without duplicates!)
+#  Filter DataFrame by multiple OR conditions:
+print("filter: ", stu2[(stu2.name == 'Yam') | (stu2.name == 'Gal') | (stu2.name == 'Chai')])
+
+# Shorter way:
+print("filter: ", stu2[stu2.name.isin(['Yam', 'Gal', 'Chai'])])
+# Invert the filter:
+print("filter invert: ", stu2[~stu2.name.isin(['Yam', 'Gal', 'Chai'])])
+
+#new = stu1.merge(stu2,on=['Team','Year'],how='left')
+adding_all = pd.merge(emp, stu2, how='outer')    # how='outer' joins all values and all rows (without duplicates!)
 print('--------------how = outer: Join Data. retains all values, all rows!! without duplicates!\n')
 print(adding_all)
 
 new = adding_all.merge(stu, how='left')  # joins all values and all rows (without duplicates!)
-new1 = adding_all.merge(stu2, how='right')  # how = right: Only matching rows from both sets
+new1 = adding_all.merge(stu, how='right')  # how = right: Only matching rows from both sets
 print('--------------how = left:\n')
 print(new)
 print('----------------how = right: Only  rows that are unique to one of the sets:\n')
@@ -36,3 +44,4 @@ print(new3)
 new4 = stu[stu.name.isin(stu2.name)]
 print('All rows in stu that have a match in stu2')
 print(new4)
+
