@@ -2,18 +2,12 @@ import pandas as pd
 import datetime
 from pathlib import Path
 import tkinter as tk
-
+from tkinter import simpledialog
+from tkinter import messagebox
 
 
 project_folder = Path("D:\\Python\\")
 open_employee = project_folder / 'employees.csv'
-
-# attendance_log = pd.read_csv('Attendance_log.csv')
-'''
-# The file Must be w\o any blank lines!!
-check_emp = pd.read_csv(open_employee, index_col='employee_id')
-print(check_emp)
-'''
 
 def late_employee():
     # open attendance file
@@ -32,15 +26,10 @@ def late_employee():
 
 def mark_attendance():
     # Creating a frame widget
-    '''
-    frame = tk.Frame(root, bg='gray', bd=5) # bd=border margins
-    frame.place(relx=0.42, rely=0.95, width=0.75, height=0.5)
-    id_label = tk.Label(frame, text="Please enter your ID", bd=10)
-    id_label.place(relx=0.52, rely=0.95)
-    idEntry = tk.Entry(frame, bg='grey')
-    idEntry.place(relx=0.72, rely=0.95)
-    '''
-    new = simpledialog.askinteger("input", "Please enter your ID", parent = root)
+    
+    new = simpledialog.askinteger("input", "Please enter your ID")
+    if new is None:
+        messagebox.showerror("You must enter only ID number")
     # open the main employee file
     employees_main = pd.read_csv(open_employee, index_col=False,
                                  skipinitialspace=True, skip_blank_lines=True)
@@ -51,16 +40,11 @@ def mark_attendance():
     attendance_file = pd.read_csv('attendance_log.csv', index_col=False,
                                   skipinitialspace=True, skip_blank_lines=True)
     attendance_file = attendance_file.drop_duplicates()
-    '''
-    try:
-        new = answer    
-    # checking for errors:
-    except ValueError:
-        print("You must enter only ID number")
-    '''
+    
     if new not in attendance_file['employee_id'].values:
         if new not in emp['employee_id'].values:
-            print('No such employee in the employee main file')
+            messagebox.showwarning("ERROR!", "No such employee in the employee main file")
+            
 
     else:
         now_time = datetime.datetime.now()
@@ -171,5 +155,5 @@ def date_range():
     result = attendance_file.loc[(attendance_file['date'] >= starting_datetime) & (attendance_file['date'] <= ending_datetime)]
     print(result.sort_values(by=['date'], ascending=False))
 
-
+    root.mainpool()
     # The working path HAVE to be the Final_Project Path or it won't write to the right file!!!

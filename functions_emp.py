@@ -2,67 +2,43 @@ import pandas as pd
 from pathlib import Path
 import tkinter as tk
 from PIL import ImageTk, Image
+from tkinter import simpledialog
+from tkinter import messagebox
 
 project_folder = Path("D:\\Python\\")
 open_employee = project_folder / 'employees.csv'
-
-# attendance_log = pd.read_csv('Attendance_log.csv')
-
-# The file Must be w\o any blank lines!!
-check_emp = pd.read_csv(open_employee, index_col='employee_id')
-print(check_emp)
-# Index(['employee_id', 'name', 'phone', 'age'], dtype='object')
-print(check_emp.columns)
-
-def check_info(info):
-    if len(info) != 4:
-        print ('Please write all the information as requested')
-        add_employee()
-    if not info[0].isnumeric():
-        print ('id number must contains only numbers')
-        add_employee()
-    if not info[1].strip().isalpha():
-        print ('Name  must contains only letters')
-        add_employee()
-    if not info[2].strip().isnumeric():
-        print ('Phone-number must contains only numbers')
-        add_employee()
-    if not info[3].strip().isnumeric():
-        print ('age must be numbers only')
-        add_employee()
-    if len(info[3].strip())!= 2:
-        print ('age must contains 2 numbers only')
-        add_employee()
-
 
 def add_employee():
     # open the file
     employees = pd.read_csv(open_employee, index_col=False,
                             skipinitialspace=True, skip_blank_lines=True)
-
-    try:
-        new = input(
-            "Please write: Employee_ID, Name, Phone, Age (using commas as separators):\n")
-    # checking for errors:
-    except ValueError:
-        print("You must enter all the data mentioned with commas")
-        # Separate on comma.
-    info = new.split(",")  # separate every string between ","
-    #check if the info is correct:
-    check_info(info)
-    # Pass this list to DataFrame’s constructor to create a dataframe object
+    new_id = simpledialog.askinteger("input", "Please enter ID")
+    if new_id is None:
+        messagebox.showerror("You must enter only ID number")
+    if new_id in employees.id.values:
+        messagebox.showerror("ID error", "This ID already exists!")
+    new_name = simpledialog.askstring("input name", "Please enter the Name")
+    if new is None:
+        messagebox.showerror("You must enter only letters")
+    new_phone = simpledialog.askinteger("input phone", "Please enter Phone number")        
+    if new_phone is None:
+        messagebox.showerror("You must enter only numbers")        
+    new_age = simpledialog.askinteger("input age", "Please enter the age")
+    if new_age is None:
+        messagebox.showerror("You must enter only numbers")
+    if len(new_age) > 2:
+        messagebox.showerror("You must enter only 2 numbers for age") 
+    
+    # Pass the info to DataFrame’s constructor to create a dataframe object
     info_df = pd.DataFrame(
-        [info], columns=['employee_id', 'name', 'phone', 'age'])
+        {'employee_id': new_id, 'name': new_name, 'phone': new_phone, 'age': new_age})
     print(info_df)
-    # check if the name already exists:
-    if info_df.values in employees.values:
-        print('***************This employee already exists ************************\n')
     # appends the add_file to the employees file w new index
     employees = pd.concat([employees, info_df], ignore_index=True)
     employees = employees.drop_duplicates()  # deletes any duplicates in file
     print(employees)
     employees.to_csv(open_employee, index=False)
-
+    messagebox.showinfo("New Employee", "New employee added!") 
 # +++++++++++++++++ Add from file
 
 

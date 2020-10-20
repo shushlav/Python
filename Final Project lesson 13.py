@@ -63,7 +63,7 @@ exit_button.place(relx=0.76, rely=0.7, relwidth=0.2, relheight=0.1)
 
 def exit():
     print("Good Bye!")
-    stop == True
+    #stop == True
 
 
 '''
