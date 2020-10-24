@@ -49,5 +49,5 @@ lower_frame.place(relx=0.5, rely=0.25, relwidth=0.75, relheight=0.6, anchor='n')
 label = tk.Label(lower_frame, text='This is a label', bg='yellow')
 label.place(relwidth=1, relheight=1)   #fills the lower frame (with borders)
 
-
 root.mainloop()    # To run the app
+'''

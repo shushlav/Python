@@ -6,7 +6,13 @@ import tkinter as tk
 from tkinter import filedialog
 from PIL import ImageTk, Image
 
-
+'''
+Error
+_tkinter.TclError: image "pyimage1" doesn't exist
+creating more than once instance of Tk. 
+Tkinter is designed such that there should only ever be exactly once instance of Tk
+the rest need to be instances of Toplevel
+'''
 HEIGHT = 700  # size of canvas
 WIDTH = 1500
 root = tk.Tk()   # creates the root window

@@ -1,18 +1,109 @@
 import pandas as pd
 from pathlib import Path
+from tkinter import *
 import tkinter as tk
 from PIL import ImageTk, Image
 from tkinter import simpledialog
 from tkinter import messagebox
 from tkinter import filedialog
+from pandastable import Table 
+ 
+
 
 project_folder = Path("D:\\Python\\")
 open_employee = project_folder / 'employees.csv'
 
 def add_employee():
-    # open the file
-    employees = pd.read_csv(open_employee, index_col=False,
-                            skipinitialspace=True, skip_blank_lines=True)
+    
+    def save_employee():
+        # gather all the info from the screen
+        anew_id = new_id.get()
+        anew_name = new_name.get()
+        anew_phone = new_phone.get()
+        anew_age = new_age.get()
+
+        #error checking:
+        #blank entry
+        if anew_id == '' or anew_name == '' or anew_phone =='' or anew_age == '':
+            messagebox.showerror('Error', "Some of the information is not full")
+    
+        elif not anew_name.isalpha():
+            messagebox.showerror("You must enter only letters")
+        elif len(new_age) > 2:
+            messagebox.showerror("You must enter only 2 numbers for age") 
+
+        else:
+            result = messagebox.askquestion("Save", "Do you want to same the data to the file?")
+            
+            if result == 'yes':
+                # open the file
+                employees = pd.read_csv(open_employee, index_col=False,
+                                skipinitialspace=True, skip_blank_lines=True)
+                # Pass the info to DataFrame’s constructor to create a dataframe object
+                info_df=pd.DataFrame({'employee_id': [anew_id], 'name': [
+                                    anew_name], 'phone': [anew_phone], 'age': [anew_age]})
+
+                # appends the info_df to the employees file w new index
+                employees = pd.concat([employees, info_df], ignore_index=True)
+                employees = employees.drop_duplicates()  # deletes any duplicates in file
+                print(employees)
+                employees.to_csv(open_employee, index=False)
+                messagebox.showinfo("New Employee", "New employee added!") 
+                addEmployee.mainloop()
+            else:
+                new_id.set('')
+                new_name.set('')
+                new_phone.set('')
+                new_age.set('')
+
+    # Set up the frame
+    addEmployee = tk.Toplevel(bg='light grey')
+    
+
+    # define all the variables for each gui component
+    new_id = StringVar()
+    new_name = StringVar()
+    new_phone = StringVar()
+    new_age = StringVar()
+
+    # Row 0 - Headings
+    lblHeading = tk.Label(addEmployee, text="New employee", font=('Arial',24, 'bold'))
+    lblHeading.grid(row=0, column=0, columnspan = 2, padx=20, pady=10)
+    
+    # Row 1 - ID and entry
+    lblID = tk.Label(addEmployee, text="ID number", font=('Arial', 14, 'bold'), width= 12, relief=tk.RIDGE)
+    lblID.grid(row=1, column=0)
+    entryID = tk.Entry(addEmployee, textvariable=new_id, width=10)
+    entryID.grid(row=1, column=1)
+    
+    # Row 2 - Name and entry
+    lblName = tk.Label(addEmployee, text="Name", font=('Arial', 14, 'bold'), justify=LEFT, width= 12, relief=tk.RIDGE)
+    lblName.grid(row=2, column=0)
+    entryName = tk.Entry(addEmployee, textvariable=new_name, width=10)
+    entryName.grid(row=2, column=1)
+    
+    # Row 3 - Phone and entry
+    lblPhone = tk.Label(addEmployee, text="Phone no.", font=('Arial', 14, 'bold'), justify=LEFT, width= 12, relief=tk.RIDGE)
+    lblPhone.grid(row=3, column=0)
+    entryPhone = tk.Entry(addEmployee, textvariable=new_phone, width=10)
+    entryPhone.grid(row=3, column=1)
+
+    # Row 4 - Age and entry
+    lblAge = tk.Label(addEmployee, text="Age", font=('Arial', 14, 'bold'), width= 12, relief=tk.RIDGE)
+    lblAge.grid(row=4, column=0)
+    entryAge = tk.Entry(addEmployee, textvariable=new_age, width=10, relief=tk.SUNKEN)
+    entryAge.grid(row=4, column=1)
+
+    # Row 5 -buttons
+    submit_button = tk.Button(addEmployee, text="Save", justify=LEFT)  #command=save_employee,
+    submit_button.grid(row=5, column=0, sticky=E, padx=20, pady=10)
+    cancel_button = tk.Button(addEmployee, text="Cancel")
+    cancel_button.grid(row=5, column=1, sticky=E, padx=20, pady=10)
+
+    addEmployee.mainloop()
+
+    
+'''
     new_id = simpledialog.askinteger("input", "Please enter ID")
     if new_id is None:
         messagebox.showerror("You must enter only ID number")
@@ -33,19 +124,8 @@ def add_employee():
         messagebox.showerror("You must enter only numbers")
     if len(str(new_age)) > 2:
         messagebox.showerror("You must enter only 2 numbers for age") 
+'''
     
-    # Pass the info to DataFrame’s constructor to create a dataframe object
-    info_df = pd.DataFrame(
-        {'employee_id': [new_id], 'name': [new_name], 'phone': [new_phone], 'age': [new_age]})
-    print(info_df)
-    # appends the add_file to the employees file w new index
-    employees = pd.concat([employees, info_df], ignore_index=True)
-    employees = employees.drop_duplicates()  # deletes any duplicates in file
-    print(employees)
-    employees.to_csv(open_employee, index=False)
-    messagebox.showinfo("New Employee", "New employee added!") 
-
-
 
 # +++++++++++++++++ Add from file
 
@@ -90,6 +170,14 @@ def delete_employee():
     employees = pd.read_csv(open_employee, index_col=False, skipinitialspace=True, skip_blank_lines=True)
 
     emp = employees.drop_duplicates()  # deletes any duplicates in file
+    '''
+    # display the data in new window
+    buttonStart_Click={
+    Import-Csv -Path C:\ps-test\SAPIENMVP2015.csv `
+        -Header ID, Name, City, State, Country |
+    Out-GridView –Title Get-CsvData
+}
+    '''
     print(emp)
     new_name = simpledialog.askstring("input", "Please enter the name to DELETE")
     if new_name is None:
@@ -112,6 +200,7 @@ def delete_employee():
             messagebox.showinfo("Delete", "Employee Deleted")
         else:
             messagebox.showinfo("Delete", "Delete employee - CANCELED!")
+
 # ------------------------Delete employee from file        
 # Delete employees from a file
 def delete_fromFile():
@@ -142,3 +231,4 @@ def delete_fromFile():
 
     new_emp.to_csv('D:\\Python\\employeesTest1.csv', index=False)
     new_emp.to_csv(open_employee, index=False)
+
