@@ -171,14 +171,15 @@ def delete_employee():
     employees = pd.read_csv(open_employee, index_col=False, skipinitialspace=True, skip_blank_lines=True)
     emp = employees.drop_duplicates()  # deletes any duplicates in file
     # Set up variable
-    #del_name = StringVar()
+    del_name = tk.StringVar()
 
-    # Set up the windows
+    # Set up the window
     delEmployee = tk.Toplevel(bg='green')
+    delEmployee.geometry("1000x500")
     
     # Frame for TreeView (for csv file)
     frame1 = tk.LabelFrame(delEmployee, text="Employees File", bg="yellow")
-    frame1.place(relheight=0.6, relwidth=1)
+    frame1.place(relx=0.1, relheight=0.6, relwidth=0.8)
 
 
     ## Treeview Widget
@@ -191,72 +192,36 @@ def delete_employee():
     treescrollx.pack(side="bottom", fill="x") # make the scrollbar fill the x axis of the Treeview widget
     treescrolly.pack(side="right", fill="y") # make the scrollbar fill the y axis of the Treeview widget
 
-    print(list(emp.columns))
-    tv1["column"] = list(emp.columns)
-    tv1["show"] = "headings"
+    tv1["column"] = list(emp.columns)  # writing columns headings
+    tv1["show"] = "headings"   # Display the heading row
     for column in tv1["columns"]:
         tv1.heading(column, text=column) # let the column heading = column name
 
     df_rows = emp.to_numpy().tolist() # turns the dataframe into a list of lists
     for row in df_rows:
         tv1.insert("", "end", values=row) # inserts each list into the treeview. For parameters see https://docs.python.org/3/library/tkinter.ttk.html#tkinter.ttk.Treeview.insert
-    return None
-
-    '''
-    ## Treeview Widget
-    tv1 = ttk.Treeview(frame1, columns=(1,2,3,4,5), show="headings", height="1")
-    tv1.pack()
-    #Create scrollbars
-    treescrolly = tk.Scrollbar(frame1, orient="vertical", command=tv1.yview) # command means update the yaxis view of the widget
-    treescrollx = tk.Scrollbar(frame1, orient="horizontal", command=tv1.xview) # command means update the xaxis view of the widget
-    tv1.configure(xscrollcommand=treescrollx.set, yscrollcommand=treescrolly.set) # assign the scrollbars to the Treeview Widget
-    treescrollx.pack(side="bottom", fill="x") # make the scrollbar fill the x axis of the Treeview widget
-    treescrolly.pack(side="right", fill="y") # make the scrollbar fill the y axis of the Treeview widget
-
-    #headings to treeview
-    tv1.heading(1, text="Employee_id")
-    tv1.heading(2, text="Name")
-    tv1.heading(3, text="Phone")
-    tv1.heading(4, text="Age")
-    tv1.heading(5, text="Job Title")
-
-    # The file/file path text
-    for row in list(emp):
-        id = row["employee_id"]
-        name = row["name"]
-        phone = row["phone"]
-        age = roe["age"]
-        job = row["Job Title"]
-        tv1.insert("", 0,  values=(id, name, phone, age, job))
-    
-    
-    
+            
     # Frame for open file dialog
-    file_frame = tk.LabelFrame(delEmployee, text="delete employee", bg="yellow")
-    file_frame.place(height=100, width=400, rely=0.65, relx=0)
-    '''
+    file_frame1 = tk.LabelFrame(delEmployee, text="delete employee", bg="pink")
+    file_frame1.place(relx=0.1, rely= 0.7, relheight=0.15, relwidth=0.8)
+    
+    #TODO  
+    #Set up delete label & entry
+    delName = tk.Label(file_frame1, relief=tk.RAISED, text="Name to delete: ", )      #(file_frame1, text="Name to delete: ", font=('Arial', 14, 'bold'), relief=RAISED)
+    delName.place(relx=0.1, relwidth=0.2)
+    new_name = tk.Entry(file_frame1, textvariable=del_name, width=10, relief=tk.SUNKEN)
+    new_name.place(relx=0.35, relwidth=0.3)
+    
+    # Set up the buttons
+    delete_button = tk.Button(delEmployee, text="Delete", relief=tk.RAISED)  # TODO: add command
+    delete_button.place(relx=0.2, rely=0.9)
+    cancel_button = tk.Button(delEmployee, text="Cancel", relief=tk.RAISED)
+    cancel_button.place(relx=0.7, rely=0.9)
+    
+    
     delEmployee.mainloop()
     
-
     '''
-    #Set uo delete label & entry
-    delName = tk.Label(delEmployee, text="Name to delete: ", font=('Arial', 14, 'bold'), relief=RAISED)
-    delName.grid(row=0, column=0, columnspan=2)
-    new_name = tk.Entry(delEmployee, textvariable=del_name, width=10, relief=tk.SUNKEN)
-    new_name.grid(row=0, column=2, columnspan=2)
-    # Set up the CSV file widget
-    lblTable = tk.Label(delEmployee, text=emp, font=('Arial', 14, 'bold'), anchor=N, relief=SUNKEN)
-    lblTable.grid(row=2, column=0, columnspan=5, rowspan=15, ipadx=5, ipady=5)
-    # Set up the buttons
-    delete_button = tk.Button(delEmployee, text="Delete", relief=RAISED)  # TODO: add command
-    delete_button.grid(row=20, column=0, columnspan=2, ipadx=5, ipady=5)
-    cancel_button = tk.Button(delEmployee, text="Cancel", relief=RAISED)
-    cancel_button.grid(row=20, column=2, columnspan=2, ipadx=5, ipady=5)
-    
-    '''
-    
-    
-    
     if new_name is None:
         return
     elif not new_name.isalpha():
@@ -277,7 +242,7 @@ def delete_employee():
             messagebox.showinfo("Delete", "Employee Deleted")
         else:
             messagebox.showinfo("Delete", "Delete employee - CANCELED!")
-
+    '''
 # ------------------------Delete employee from file
 # Delete employees from a file
 
