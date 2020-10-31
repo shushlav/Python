@@ -156,5 +156,5 @@ def date_range():
     result = attendance_file.loc[(attendance_file['date'] >= starting_datetime) & (attendance_file['date'] <= ending_datetime)]
     print(result.sort_values(by=['date'], ascending=False))
 
-    root.mainpool()
+    
     # The working path HAVE to be the Final_Project Path or it won't write to the right file!!!
