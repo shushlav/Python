@@ -21,51 +21,54 @@ def add_employee():
         anew_phone = new_phone.get()
         anew_age = new_age.get()
 
-        # error checking:
+        # error checking: TODO: add more errors for phone and age and don't close the window
         # blank entry
         if anew_id == '' or anew_name == '' or anew_phone == '' or anew_age == '':
             messagebox.showerror(
-                'Error', "Some of the information is not full")
-
+                'Error', "Some of the information is not full", parent=addEmployee)  # parent= keeps the frame open!
+            
         if not anew_name.isalpha():
             messagebox.showerror(
-                'Name Error', "You must enter only letters in 'Name'")
-        if len(new_age) > 2:
+                'Name Error', "You must enter only letters in 'Name'", parent=addEmployee)
+            
+        if len(anew_age) != 2:              #TODO - stop and return to age entry
             messagebox.showerror(
-                'Age Error', "You must enter only 2 numbers for age")
+                'Age Error', "You must enter only 2 numbers for age", parent=addEmployee)
+            
 
-        result = messagebox.askquestion(
-            "Save", "Do you want to save the data to the file?")
-
-        if result == 'yes':
-            # open the file
-            employees = pd.read_csv(open_employee, index_col=False,
-                                        skipinitialspace=True, skip_blank_lines=True)
-            # Pass the info to DataFrame’s constructor to create a dataframe object
-            info_df = pd.DataFrame({'employee_id': [anew_id], 'name': [
-                anew_name], 'phone': [anew_phone], 'age': [anew_age]})
-
-            # appends the info_df to the employees file w\o new index
-            employees = pd.concat([employees, info_df], ignore_index=True)
-            employees = employees.drop_duplicates()  # deletes any duplicates in file
-            print(employees)
-            employees.to_csv(open_employee, index=False)
-            messagebox.showinfo("New Employee", "New employee added!")
-            # addEmployee.mainloop()
         else:
-            new_id.set('')
-            new_name.set('')
-            new_phone.set('')
-            new_age.set('')
+            result = messagebox.askquestion(
+            "Save", "Do you want to save the data to the file?", parent=addEmployee)
+
+            if result == 'yes':
+                # open the file
+                employees = pd.read_csv(open_employee, index_col=False,
+                                            skipinitialspace=True, skip_blank_lines=True)
+                # Pass the info to DataFrame’s constructor to create a dataframe object
+                info_df = pd.DataFrame({'employee_id': [anew_id], 'name': [
+                    anew_name], 'phone': [anew_phone], 'age': [anew_age]})
+
+                # appends the info_df to the employees file w\o new index
+                employees = pd.concat([employees, info_df], ignore_index=True)
+                employees = employees.drop_duplicates()  # deletes any duplicates in file
+                print(employees)
+                employees.to_csv(open_employee, index=False)
+                messagebox.showinfo("New Employee", "New employee added!")
+                # addEmployee.mainloop()
+            else:
+                new_id.set('')
+                new_name.set('')
+                new_phone.set('')
+                new_age.set('')
 
     # Set up the frame
     addEmployee = tk.Toplevel(bg='light grey')
 
     # define all the variables for each gui component
-    new_id = StringVar()
-    new_name = StringVar()
-    new_phone = StringVar()
-    new_age = StringVar()
+    new_id = tk.StringVar()
+    new_name = tk.StringVar()
+    new_phone = tk.StringVar()
+    new_age = tk.StringVar()
 
     # Row 0 - Headings
     lblHeading = tk.Label(addEmployee, text="New employee", font=('Arial', 24, 'bold'))
@@ -73,33 +76,33 @@ def add_employee():
 
     # Row 1 - ID and entry
     lblID = tk.Label(addEmployee, text="ID number", font=('Arial', 14, 'bold'), width=12, relief=tk.RIDGE)
-    lblID.grid(row=1, column=0)
-    entryID = tk.Entry(addEmployee, textvariable=new_id, width=10)
-    entryID.grid(row=1, column=1)
+    lblID.grid(row=1, column=0, padx=20)
+    entryID = tk.Entry(addEmployee, textvariable=new_id, width=12)
+    entryID.grid(row=1, column=1, padx=20)
 
     # Row 2 - Name and entry
-    lblName = tk.Label(addEmployee, text="Name", font=('Arial', 14, 'bold'), justify=LEFT, width=12, relief=tk.RIDGE)
+    lblName = tk.Label(addEmployee, text="Name", font=('Arial', 14, 'bold'), width=12, relief=tk.RIDGE)
     lblName.grid(row=2, column=0)
-    entryName = tk.Entry(addEmployee, textvariable=new_name, width=10)
+    entryName = tk.Entry(addEmployee, textvariable=new_name, width=12)
     entryName.grid(row=2, column=1)
 
     # Row 3 - Phone and entry
-    lblPhone = tk.Label(addEmployee, text="Phone no.", font=('Arial', 14, 'bold'), justify=LEFT, width=12, relief=tk.RIDGE)
-    lblPhone.grid(row=3, column=0)
-    entryPhone = tk.Entry(addEmployee, textvariable=new_phone, width=10)
+    lblPhone = tk.Label(addEmployee, text="Phone no.", font=('Arial', 14, 'bold'), width=12, relief=tk.RIDGE)
+    lblPhone.grid(row=3, column=0, padx=20)
+    entryPhone = tk.Entry(addEmployee, textvariable=new_phone, width=12,)
     entryPhone.grid(row=3, column=1)
 
     # Row 4 - Age and entry
     lblAge = tk.Label(addEmployee, text="Age", font=('Arial', 14, 'bold'), width=12, relief=tk.RIDGE)
-    lblAge.grid(row=4, column=0)
-    entryAge = tk.Entry(addEmployee, textvariable=new_age, width=10, relief=tk.SUNKEN)
+    lblAge.grid(row=4, column=0, padx=20, sticky=tk.W)
+    entryAge = tk.Entry(addEmployee, textvariable=new_age, width=12, relief=tk.SUNKEN)
     entryAge.grid(row=4, column=1)
 
     # Row 5 -buttons
-    submit_button = tk.Button(addEmployee, text="Save", justify=LEFT, command=save_employee)  # command=save_employee,
-    submit_button.grid(row=5, column=0, sticky=E, padx=20, pady=10)
-    cancel_button = tk.Button(addEmployee, text="Cancel")
-    cancel_button.grid(row=5, column=1, sticky=E, padx=20, pady=10)
+    submit_button = tk.Button(addEmployee, text="Save", command=save_employee, width=10)  # command=save_employee,
+    submit_button.grid(row=5, column=0, padx=10, pady=10)
+    cancel_button = tk.Button(addEmployee, text="Cancel", command=addEmployee.destroy, width=10)  # destroys the window
+    cancel_button.grid(row=5, column=1, sticky='E', padx=20, pady=10)
 
     addEmployee.mainloop()
 
@@ -183,14 +186,18 @@ def delete_employee():
         print(name_List)
         delName = name_List[0][1]  # stores the name of the emp
         confirmtxt = "Are you sure you want to delete the marked employee?"
-        if messagebox.askokcancel("Delete", confirmtxt, default="ok", icon="warning"):
+        if messagebox.askokcancel("Delete", confirmtxt, default="ok", icon="warning", parent=delEmployee):
             print(delName)
+            #delete name from treeview:
+            d = tv1.selection()[0]  # use the raw selected
+            tv1.delete(d)
+            
             # takes up all the names except the input(new), thereby dropping the row with input name
             emp1 = employees[employees.name != delName]
             print(emp1)
             emp1.to_csv(open_employee, index=False)
             # The working path HAVE to be the Final_Project Path or it won't write to the right file!!!
-            messagebox.showinfo("Delete", "Employee Deleted")
+            messagebox.showinfo("Delete", "Employee Deleted", parent=delEmployee)
                
     
     
@@ -215,6 +222,7 @@ def delete_employee():
                 emp.to_csv(open_employee, index=False)
                 # The working path HAVE to be the Final_Project Path or it won't write to the right file!!!
                 messagebox.showinfo("Delete", "Employee Deleted")
+
                
               
     def quit():
@@ -251,15 +259,14 @@ def delete_employee():
         tv1.insert("", "end", values=row) # inserts each list into the treeview. For parameters see https://docs.python.org/3/library/tkinter.ttk.html#tkinter.ttk.Treeview.insert
             
     # Frame for open file dialog
-    file_frame1 = tk.LabelFrame(delEmployee, text="delete employee", bg="pink")
+    file_frame1 = tk.LabelFrame(delEmployee, bg="pink")
     file_frame1.place(relx=0.1, rely= 0.7, relheight=0.15, relwidth=0.8)
     
-    #TODO: COMMANDS  
+    
     #Set up delete label & entry
-    delName = tk.Label(file_frame1, relief=tk.RAISED, text="Select the name you want to delete and press delete", )      #(file_frame1, text="Name to delete: ", font=('Arial', 14, 'bold'), relief=RAISED)
-    delName.place(relx=0.1, relwidth=0.2)
-    #new_name = tk.Entry(file_frame1, textvariable=del_name, width=10, relief=tk.SUNKEN)
-    #new_name.place(relx=0.35, relwidth=0.3)
+    delName = tk.Label(file_frame1, text="Select the name you want to delete and press delete", font=('Arial', 14, 'bold'), bg='pink')      #(file_frame1, text="Name to delete: ", font=('Arial', 14, 'bold'), relief=RAISED)
+    delName.place(relx=0.1, rely=0.3, relwidth=0.8)
+    
     
     # Set up the buttons
     delete_button = tk.Button(delEmployee, text="Delete", command=delete, relief=tk.RAISED)  # TODO: add command
