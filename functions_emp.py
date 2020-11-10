@@ -166,12 +166,61 @@ def add_e_fromFile():
     emp_df.to_csv('D:\\Python\\employeesTest1.csv', index=False)
 
 
-# ------------------------Delete employee manually
+# ------------------------Delete employee manually - WORKING
 def delete_employee():
     employees = pd.read_csv(open_employee, index_col=False, skipinitialspace=True, skip_blank_lines=True)
     emp = employees.drop_duplicates()  # deletes any duplicates in file
+    
+    
     # Set up variable
     del_name = tk.StringVar()
+
+
+    def delete():
+        selected = tv1.selection()
+        # Create a list of the selected row! WORKS!!
+        name_List = [tv1.item(x)['values'] for x in selected]  # creates a nested list TODO: why nested?
+        print(name_List)
+        delName = name_List[0][1]  # stores the name of the emp
+        confirmtxt = "Are you sure you want to delete the marked employee?"
+        if messagebox.askokcancel("Delete", confirmtxt, default="ok", icon="warning"):
+            print(delName)
+            # takes up all the names except the input(new), thereby dropping the row with input name
+            emp1 = employees[employees.name != delName]
+            print(emp1)
+            emp1.to_csv(open_employee, index=False)
+            # The working path HAVE to be the Final_Project Path or it won't write to the right file!!!
+            messagebox.showinfo("Delete", "Employee Deleted")
+               
+    
+    
+    
+    #checks the name the user entered
+    def del_check():
+
+        if del_name is None:
+            return
+        if del_name not in employees['name'].values:
+            messagebox.showerror("Name error", "This NAME doesn't exist!")
+            return
+        else:
+
+        #emp[emp['name'].str.contains(del_name)]:
+            confirmtxt = "Are you sure you want to delete " + new_name + "?"
+            if messagebox.askokcancel("Delete", confirmtxt, default="ok", icon="warning"):
+
+                # takes up all the names except the input(new), thereby dropping the row with input name
+                emp = emp[employees.name != new_name]
+                print(emp)
+                emp.to_csv(open_employee, index=False)
+                # The working path HAVE to be the Final_Project Path or it won't write to the right file!!!
+                messagebox.showinfo("Delete", "Employee Deleted")
+               
+              
+    def quit():
+        delEmployee.destroy()
+
+
 
     # Set up the window
     delEmployee = tk.Toplevel(bg='green')
@@ -205,44 +254,24 @@ def delete_employee():
     file_frame1 = tk.LabelFrame(delEmployee, text="delete employee", bg="pink")
     file_frame1.place(relx=0.1, rely= 0.7, relheight=0.15, relwidth=0.8)
     
-    #TODO  
+    #TODO: COMMANDS  
     #Set up delete label & entry
-    delName = tk.Label(file_frame1, relief=tk.RAISED, text="Name to delete: ", )      #(file_frame1, text="Name to delete: ", font=('Arial', 14, 'bold'), relief=RAISED)
+    delName = tk.Label(file_frame1, relief=tk.RAISED, text="Select the name you want to delete and press delete", )      #(file_frame1, text="Name to delete: ", font=('Arial', 14, 'bold'), relief=RAISED)
     delName.place(relx=0.1, relwidth=0.2)
-    new_name = tk.Entry(file_frame1, textvariable=del_name, width=10, relief=tk.SUNKEN)
-    new_name.place(relx=0.35, relwidth=0.3)
+    #new_name = tk.Entry(file_frame1, textvariable=del_name, width=10, relief=tk.SUNKEN)
+    #new_name.place(relx=0.35, relwidth=0.3)
     
     # Set up the buttons
-    delete_button = tk.Button(delEmployee, text="Delete", relief=tk.RAISED)  # TODO: add command
+    delete_button = tk.Button(delEmployee, text="Delete", command=delete, relief=tk.RAISED)  # TODO: add command
     delete_button.place(relx=0.2, rely=0.9)
-    cancel_button = tk.Button(delEmployee, text="Cancel", relief=tk.RAISED)
+    cancel_button = tk.Button(delEmployee, text="Cancel", command=quit, relief=tk.RAISED)
     cancel_button.place(relx=0.7, rely=0.9)
     
     
     delEmployee.mainloop()
     
-    '''
-    if new_name is None:
-        return
-    elif not new_name.isalpha():
-        messagebox.showerror("Error", "You must enter a name")
-        return
-    if new_name not in employees.name.values:
-        messagebox.showerror("Name error", "This NAME doesn't exist!")
-        return
-    else:
-        confirmtxt = "Are you sure you want to delete " + new_name + "?"
-        if messagebox.askokcancel("Delete", confirmtxt, default="ok", icon="warning"):
 
-            # takes up all the names except the input(new), thereby dropping the row with input name
-            emp = emp[employees.name != new_name]
-            print(emp)
-            emp.to_csv(open_employee, index=False)
-            # The working path HAVE to be the Final_Project Path or it won't write to the right file!!!
-            messagebox.showinfo("Delete", "Employee Deleted")
-        else:
-            messagebox.showinfo("Delete", "Delete employee - CANCELED!")
-    '''
+
 # ------------------------Delete employee from file
 # Delete employees from a file
 
