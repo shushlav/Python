@@ -74,7 +74,7 @@ by_id = tk.Button(HR_reports, text="report by employee's ID",
                          bg='#A5FA89')
 report_by_month = tk.Button(HR_reports, text='report by month',
                         bg='#A5FA89')
-late_employee = tk.Button(HR_reports, text='report of late employee',
+late_employee = tk.Button(HR_reports, text='report of late employee', command=Attendance_report_function.late_employee,
                         bg='#A5FA89')
 date_range = tk.Button(HR_reports, text='report of given date range',
                         bg='#A5FA89')

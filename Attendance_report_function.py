@@ -4,23 +4,80 @@ from pathlib import Path
 import tkinter as tk
 from tkinter import simpledialog
 from tkinter import messagebox
+from tkinter import ttk, filedialog, messagebox, simpledialog
 
 
 project_folder = Path("D:\\Python\\")
 open_employee = project_folder / 'employees.csv'
+Attendance_log = project_folder / 'attendance_log.csv'
 
+# create a class for window with treeview
+class Make_window():
+
+    def __init__(self):
+# Set up the window
+        self.new_win = tk.Toplevel(bg='gray')
+        self.new_win.geometry("1000x500")
+        
+    # Frame for TreeView (for csv file)
+        self.frame1 = tk.LabelFrame(self.new_win, text="File", bg="purple")
+        self.frame1.place(relx=0.1, relheight=0.6, relwidth=0.8)
+
+        # Treeview Widget
+        self.tv1 = ttk.Treeview(self.frame1)
+        # set the height and width of the widget to 100% of its container (frame1).
+        self.tv1.place(relheight=1, relwidth=1)
+        # scrollbars
+        # command means update the yaxis view of the widget
+        self.treescrolly = tk.Scrollbar(self.frame1, orient="vertical", command=self.tv1.yview)
+        # command means update the xaxis view of the widget
+        self.treescrollx = tk.Scrollbar(self.frame1, orient="horizontal", command=self.tv1.xview)
+        # assign the scrollbars to the Treeview Widget
+        self.tv1.configure(xscrollcommand=self.treescrollx.set,
+                    yscrollcommand=self.treescrolly.set)
+        # make the scrollbar fill the x axis of the Treeview widget
+        self.treescrollx.pack(side="bottom", fill="x")
+        # make the scrollbar fill the y axis of the Treeview widget
+        self.treescrolly.pack(side="right", fill="y")
+    
+    def file_to_treeview(self, my_file):
+    #TODO: how to insert the file you want for each function
+        self.my_file = my_file
+        self.tv1["column"] = list(self.my_file.columns)  # writing columns headings
+        self.tv1["show"] = "headings"   # Display the heading row
+        for column in self.tv1["columns"]:
+            # let the column heading = column name
+            self.tv1.heading(column, text=column)
+
+        self.df_rows = self.my_file.to_numpy().tolist()  # turns the dataframe into a list of lists
+        for row in self.df_rows:
+            # inserts each list into the treeview. For parameters see https://docs.python.org/3/library/tkinter.ttk.html#tkinter.ttk.Treeview.insert
+            self.tv1.insert("", "end", values=row)
+
+#----------------------------Late Employee (over 9:30)
 def late_employee():
     # open attendance file
-    attendance_file = pd.read_csv('attendance_log.csv', index_col=False,
+    attendance_file = pd.read_csv(Attendance_log, index_col=False,
                                   skipinitialspace=True, skip_blank_lines=True)
     attendance_file = attendance_file.drop_duplicates()  # delete duplicates
-    attendance_file.time = pd.to_datetime(attendance_file.time).dt.time # change object to time type
+    print(attendance_file.head())
+    print(attendance_file.columns)
+    
+    attendance_file = attendance_file.employee_id.astype(int)         # change ID to be integers
+    attendance_file.astype({'time': 'datetime'})           # TODO: Fix the error
+    #attendance_file.time.astype(datetime)                               # # change column type to time type            
+    #attendance_file.time = pd.to_datetime(attendance_file.time).dt.time # change object to time type
     # finds time>9:30
     late = attendance_file[attendance_file.time > datetime.time(9,30,0)]
     if late.empty:
         print('No employees in this search')
-    # print sorted by name
-    print(late.sort_values(by=['name'], ascending=False))
+    # TODO: show sorted by name in Treeview
+    late_file = late.sort_values(by=['name'], ascending=False)
+    Make_window()   # call the class ! -> Creates the new window nicely!
+    Make_window.file_to_treeview(late_file)
+    
+
+    
 
 
 
@@ -37,9 +94,9 @@ def mark_attendance():
     emp = employees_main.drop_duplicates()  # deletes any duplicates in file
     
     # open attendance file
-    attendance_file = pd.read_csv('attendance_log.csv', index_col=False,
+    attendance_file = pd.read_csv(Attendance_log, index_col=False,
                                   skipinitialspace=True, skip_blank_lines=True)
-    attendance_file = attendance_file.drop_duplicates()
+    attendance_file = attendance_file.drop_duplicates()    # deletes any duplicates in file
     
     if new not in attendance_file['employee_id'].values:
         if new not in emp['employee_id'].values:
@@ -51,7 +108,8 @@ def mark_attendance():
         entering_time = now_time.replace(microsecond=0)    # deleting the microseconds
         # print in the format I want
         mark_time= 'Entering time is: ' + entering_time.strftime("%d/%m/%Y %H:%M")
-        messagebox.showinfo('Mark attendance', mark_time)
+        #messagebox.showinfo('Mark attendance', mark_time)
+        print('Mark attendance', mark_time)
         # create a new dataframe
         new_record = pd.DataFrame({'employee_id': new, 'name': emp[emp.employee_id == new].name,
                                 'date': entering_time.date().strftime("%d/%m/%Y"), 'time': entering_time.time() })
@@ -94,7 +152,7 @@ def emp_attendance_log():
     emp = employees_main.drop_duplicates()  # deletes any duplicates in file
     print(emp)
     # open attendance file
-    attendance_file = pd.read_csv('attendance_log.csv', index_col=False,
+    attendance_file = pd.read_csv(Attendance_log, index_col=False,
                             skipinitialspace=True, skip_blank_lines=True)
     try:
         new = int(input("Please enter the ID of the employee for attendance log:\n"))

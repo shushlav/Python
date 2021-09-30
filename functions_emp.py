@@ -3,7 +3,7 @@ from pathlib import Path
 import tkinter as tk
 from PIL import ImageTk, Image
 from tkinter import ttk, filedialog, messagebox, simpledialog
-from pandastable import Table
+#from pandastable import Table
 #from tksheet import *
 
 
@@ -90,13 +90,16 @@ def add_employee():
         anew_name = new_name.get()
         anew_phone = new_phone.get()
         anew_age = new_age.get()
-
-        # error checking: TODO: add more errors for phone and age and don't close the window
-        # blank entry
+        errors = 0
+        
+            
+    # error checking: TODO: add more errors for phone and age and don't close the window
+    # blank entry
+            
         if anew_id == '' or anew_name == '' or anew_phone == '' or anew_age == '':
             messagebox.showerror(
                 'Error', "Some of the information is not full", parent=addEmployee)  # parent= keeps the frame open!
-
+            
         if not anew_name.isalpha():
             messagebox.showerror(
                 'Name Error', "You must enter only letters in 'Name'", parent=addEmployee)
@@ -104,7 +107,7 @@ def add_employee():
         if len(anew_age) != 2:  # TODO - stop and return to age entry
             messagebox.showerror(
                 'Age Error', "You must enter only 2 numbers for age", parent=addEmployee)
-
+        
         else:
             result = messagebox.askquestion(
                 "Save", "Do you want to save the data to the file?", parent=addEmployee)
@@ -112,7 +115,7 @@ def add_employee():
             if result == 'yes':
                 
                 addEmployee.destroy()    # destroys the window
-                # open the file
+                # open the file 
                 employees = pd.read_csv(open_employee, index_col=False,
                                         skipinitialspace=True, skip_blank_lines=True)
                 # Pass the info to DataFrame’s constructor to create a dataframe object
@@ -126,6 +129,18 @@ def add_employee():
                 employees.to_csv(open_employee, index=False)
                 messagebox.showinfo("New Employee", "New employee added!")
                 
+                # show the employees list in GUI:
+                employees = pd.read_csv(open_employee, index_col=False,
+                            skipinitialspace=True, skip_blank_lines=True)
+                emp = employees.drop_duplicates()  # deletes any duplicates in file
+                selected = tv1.selection()
+                # Create a list of the selected row! WORKS!!
+                # creates a nested list TODO: why nested?
+                name_List = [tv1.item(x)['values'] for x in selected]
+                print(name_List)
+
+
+    
                 # addEmployee.mainloop()
             else:
                 new_id.set('')
@@ -233,7 +248,7 @@ def delete_employee():
     employees = pd.read_csv(open_employee, index_col=False,
                             skipinitialspace=True, skip_blank_lines=True)
     emp = employees.drop_duplicates()  # deletes any duplicates in file
-
+    
 
     def delete():
         selected = tv1.selection()
@@ -259,7 +274,7 @@ def delete_employee():
     def quit():
         delEmployee.destroy()
 
-    # Set up the window
+    # Set up the window     TODO: make it a function or a class to show the list
     delEmployee = tk.Toplevel(bg='green')
     delEmployee.geometry("1000x500")
 
@@ -343,3 +358,11 @@ def delete_fromFile():
     new_emp.to_csv('D:\\Python\\employeesTest1.csv', index=False)
     new_emp.to_csv(open_employee, index=False)
     messagebox.showinfo('Delete from File', "Employees from file were deleted!")
+
+
+    # *********************** function to open a file ************************
+    
+    def read_Employee():
+        employees = pd.read_csv(open_employee, index_col=False,
+                            skipinitialspace=True, skip_blank_lines=True)
+        emp = employees.drop_duplicates()  # deletes any duplicates in file 
